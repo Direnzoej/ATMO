@@ -39,6 +39,8 @@ def plot2D( dataSets,
            fontSize=(12,14,14,10),
            legendLabels=None,
            legendLoc='best',
+           legendCols=1,
+           legendShadow=False,
            textBox=False,
            save=False,
            path=None,
@@ -306,12 +308,42 @@ def plot2D( dataSets,
                         pad=int(fontSize[3]*1.5) )
     if xTitle: ax.set_xlabel(xTitle,fontsize=fontSize[1])         
     if yTitle: ax.set_ylabel(yTitle,fontsize=fontSize[2])
+    ########################## legend
     # legend
-    ## labels and location
-    if legendLabels is not None:
-        if legendLoc is None: legendLoc='best'
-        ax.legend(legendLabels,loc=legendLoc)
-    ### legend formatting ###
+    if legend:
+        ### simplify sloppy redundancies in block ###
+        ## labels and location
+        if legendLabels is None: 
+            legendLabels = [str(i) for i in range(len(dataSets))]
+            #
+        if legendLoc is None: 
+            legendLoc='best'
+        else:
+            # reference
+            ### more custom locations ###
+            customLocs = ['outside right',]
+            references = ['upper center',]
+            # placement
+            ### custom placement ###
+            bboxs = [(1.25,0.75),]
+            if legendLoc in customLocs:
+                finalLoc = references[customLocs.index(legendLoc)]
+                bboxTA = bboxs[customLocs.index(legendLoc)]
+                ax.legend(legendLabels,
+                          loc=finalLoc,
+                          bbox_to_anchor=bboxTA,
+                          shadow=legendShadow,
+                          ncol=legendCols
+                          )
+            else:
+                ax.legend(legendLabels,
+                          loc=legendLoc,
+                          shadow=legendShadow,
+                          ncol=legendCols
+                          )
+                    #
+        ## legend formatting
+    ##########################
     ### text box ###
     # save file
     if save:
